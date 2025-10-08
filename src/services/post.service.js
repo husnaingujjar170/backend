@@ -1,4 +1,4 @@
-const { postRepository,userRepository } = require('../repositories');
+const { postRepository, userRepository } = require('../repositories');
 const { MESSAGES } = require('../constants');
 
 class PostService {
