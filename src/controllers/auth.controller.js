@@ -1,6 +1,6 @@
 const {authService} = require('../services');
 const {response} = require('../lib');
-const {HTTP_STATUS, MESSAGES} = require('../constants')
+const {HTTP_STATUS, MESSAGES} = require('../constants');
 
 class AuthController
 {

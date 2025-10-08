@@ -5,34 +5,24 @@ const postController = require('../controllers/post.controller');
 
 const router = express.Router();
 
-router.get('/', 
-  authenticate,
-  postController.getAllPosts);
+router.use(authenticate);
 
-router.get('/user/my-posts',
-  authenticate,
-  postController.getUserPosts
-);
+router.get('/', postController.getAllPosts);
+
+router.get('/user/my-posts', postController.getUserPosts);
 
 router.post('/',
-  authenticate,
   validate(postSchemas.createPostSchema),
   postController.createPost
 );
 
-router.get('/:postId', 
-  authenticate,
-  postController.getPostById);
+router.get('/:postId', postController.getPostById);
 
 router.put('/:postId',
-  authenticate,
   validate(postSchemas.updatePostSchema),
   postController.updatePost
 );
 
-router.delete('/:postId',
-  authenticate,             
-  postController.deletePost 
-);
+router.delete('/:postId', postController.deletePost);
 
 module.exports = router;

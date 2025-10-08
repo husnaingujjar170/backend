@@ -5,28 +5,20 @@ const commentController = require('../controllers/comment.controller');
 
 const router = express.Router();
 
-// ALL ROUTES REQUIRE AUTHENTICATION
-// Get comments for a post (protected)
-router.get('/post/:postId', 
-  authenticate,
-  commentController.getPostComments);
+router.use(authenticate);
 
-// Add comment to post (protected)
+router.get('/post/:postId', commentController.getPostComments);
+
 router.post('/post/:postId',
-  authenticate,
   validate(postSchemas.createCommentSchema),
   commentController.addComment
 );
 
 router.put('/:commentId',
-  authenticate,
   validate(postSchemas.updateCommentSchema),
   commentController.updateComment
 );
 
-router.delete('/:commentId',
-  authenticate,                  
-  commentController.deleteComment 
-);
+router.delete('/:commentId', commentController.deleteComment);
 
 module.exports = router;
