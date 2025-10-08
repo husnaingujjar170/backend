@@ -1,13 +1,13 @@
 const express = require('express');
 const authRoutes = require('../auth.routes');
-
+const postRoutes =require('../post.routes')
+const commentRoutes=require('../comment.routes')
 const router = express.Router();
 
 // All v1 routes
 router.use('/auth', authRoutes);
 
-// Future routes can be added here:
-// router.use('/users', userRoutes);
-// router.use('/posts', postRoutes);
+router.use('/posts', postRoutes);
+router.use('/comments', commentRoutes);
 
 module.exports = router;

@@ -1,7 +1,11 @@
-const authService=require('./auth.service');
-const tokenService=require('./token.service');
+const authService = require('./auth.service');
+const tokenService = require('./token.service');
+const postService = require('./post.service');
+const commentService = require('./comment.service');
 
-module.exports={
+module.exports = {
   authService,
-  tokenService
+  tokenService,
+  postService,
+  commentService
 };
