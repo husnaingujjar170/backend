@@ -1,4 +1,4 @@
-const { postRepository } = require('../repositories');
+const { postRepository,userRepository } = require('../repositories');
 const { MESSAGES } = require('../constants');
 
 class PostService {
@@ -69,6 +69,7 @@ class PostService {
 
   async updatePost(postId, updateData, userId) {
     try {
+      // 🔐 SECURITY: Only owners can edit their posts (not admins)
       const isOwner = await postRepository.isOwner(postId, userId);
       if (!isOwner) {
         throw new Error('You can only update your own posts');
@@ -88,7 +89,9 @@ class PostService {
   async deletePost(postId, userId) {
     try {
       const isOwner = await postRepository.isOwner(postId, userId);
-      if (!isOwner) {
+      const user = await userRepository.findById(userId);
+      const isAdmin = user?.isAdmin || false;
+      if (!isOwner && !isAdmin) {
         throw new Error('You can only delete your own posts');
       }
 

@@ -1,4 +1,4 @@
-const { commentRepository, postRepository } = require('../repositories');
+const { commentRepository, postRepository, userRepository } = require('../repositories');
 const { MESSAGES } = require('../constants');
 
 class CommentService {
@@ -39,8 +39,9 @@ class CommentService {
 
   async updateComment(commentId, updateData, userId) {
     try {
-      // 🔐 SECURITY: Check ownership BEFORE update
+      // 🔐 SECURITY: Only owners can edit their comments (not admins)
       const isOwner = await commentRepository.isOwner(commentId, userId);
+      
       if (!isOwner) {
         throw new Error('You can only update your own comments');
       }
@@ -60,8 +61,11 @@ class CommentService {
     try {
       // 🔐 SECURITY: Check ownership BEFORE deletion
       const isOwner = await commentRepository.isOwner(commentId, userId);
-      if (!isOwner) {
-        throw new Error('You can only delete your own comments');
+      const user = await userRepository.findById(userId);
+      const isAdmin = user?.isAdmin || false;
+      
+      if (!isOwner && !isAdmin) {
+        throw new Error('You can only delete your own comments or you must be an admin');
       }
 
       await commentRepository.deleteById(commentId);

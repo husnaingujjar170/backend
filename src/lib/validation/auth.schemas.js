@@ -35,6 +35,12 @@ const registerSchema = Joi.object({
     .messages({
       'string.min': 'Last name must be at least 2 characters long',
       'string.max': 'Last name cannot exceed 50 characters'
+    }),
+    isAdmin: Joi.boolean()
+    .optional()
+    .default(false)
+    .messages({
+      'boolean.base': 'isAdmin must be a boolean value'
     })
 });
 
