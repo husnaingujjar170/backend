@@ -25,6 +25,7 @@ module.exports = {
     POST_CREATED: 'Post created successfully',
     POST_UPDATED: 'Post updated successfully',
     POST_DELETED: 'Post deleted successfully',
+    POST_FOUND: 'Post founded',
     POST_NOT_FOUND: 'Post not found',
     COMMENT_CREATED: 'Comment added successfully',
     COMMENT_UPDATED: 'Comment updated successfully',
