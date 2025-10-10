@@ -38,7 +38,7 @@ const authorize = (roles = []) => {
     if (!req.user) {
       return response.error(res, MESSAGES.UNAUTHORIZED, HTTP_STATUS.UNAUTHORIZED);
     }
-
+    console.log("dfvelngvkwjfgnvkjrtnkvt")
     next();
   };
 };
