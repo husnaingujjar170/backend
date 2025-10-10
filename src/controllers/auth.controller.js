@@ -12,7 +12,7 @@ class AuthController
       console.log("I am here now boss\n");
         try {
         const userData=req.body;
-        const result= await authService.register(userData);
+        const result= await authService.register(userData,res);
 
         return response.success(
             res,
@@ -29,7 +29,7 @@ class AuthController
         try {
             const { email, password } = req.body;
             
-            const result = await authService.login(email, password);
+            const result = await authService.login(email, password,res);
             
             return response.success(
                 res, 
@@ -53,6 +53,21 @@ class AuthController
                 MESSAGES.SUCCESS,
                 HTTP_STATUS.OK
             );
+        } catch (error) {
+            next(error);
+        }
+    }
+    async logout(req, res, next) {
+        try {
+            const result = await authService.logout(res);
+            
+            return response.success(
+                res,
+                result,
+                result.message,
+                HTTP_STATUS.OK
+            );
+            
         } catch (error) {
             next(error);
         }

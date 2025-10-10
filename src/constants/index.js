@@ -21,6 +21,7 @@ module.exports = {
     FORBIDDEN: 'Access forbidden',
     VALIDATION_ERROR: 'Validation failed',
     ROUTE_NOT_FOUND: 'Route not found',
+    LOG_OUT: 'Logged out Successfully',
     
     POST_CREATED: 'Post created successfully',
     POST_UPDATED: 'Post updated successfully',

@@ -21,21 +21,41 @@ class PostService {
 
   async getAllPosts(page = 1, limit = 10) {
     try {
-      const posts = await postRepository.findAll(page, limit);
-      
-      return {
-        posts,
-        pagination: {
-          page: parseInt(page),
-          limit: parseInt(limit),
-          hasMore: posts.length === limit
-        },
-        message: MESSAGES.SUCCESS
-      };
+        // ✅ ENSURE INTEGERS
+        const pageNum = parseInt(page) || 1;
+        const limitNum = parseInt(limit) || 10;
+        
+        console.log('Service - Converted params:', { 
+            pageNum, 
+            limitNum, 
+            pageType: typeof pageNum, 
+            limitType: typeof limitNum 
+        });
+        
+        const offset = (pageNum - 1) * limitNum;
+        
+        console.log('Calculated offset:', offset, 'type:', typeof offset);
+        
+        const posts = await postRepository.findAll({
+            offset: offset,
+            limit: limitNum,  // ✅ NOW INTEGER
+            include: ['author', 'likes', 'comments']
+        });
+        
+        return {
+            posts,
+            pagination: {
+                page: pageNum,
+                limit: limitNum,
+                total: posts.length
+            },
+            message: MESSAGES.SUCCESS
+        };
     } catch (error) {
-      throw new Error(error.message || 'Failed to get posts');
+        console.error('Service error:', error);
+        throw new Error(error.message || 'Failed to get posts');
     }
-  }
+}
 
   async getPostById(postId) {
     try {

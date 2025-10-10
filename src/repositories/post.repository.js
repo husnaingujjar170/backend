@@ -19,29 +19,43 @@ class PostRepository {
       }
     });
   }
-
-  async findAll(page = 1, limit = 10) {
-    const skip = (page - 1) * limit;
+  async findAll(options = {}) {
+    const { offset = 0, limit = 10 } = options;
+    
+    const offsetNum = parseInt(offset) || 0;
+    const limitNum = parseInt(limit) || 10;
+    
+    console.log('Repository - Final params:', { 
+        offsetNum, 
+        limitNum, 
+        offsetType: typeof offsetNum, 
+        limitType: typeof limitNum
+    });
     
     return await prisma.post.findMany({
-      where: { isActive: true },
-      skip,
-      take: limit,
-      orderBy: { createdAt: 'desc' },
-      include: {
-        author: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true
-          }
+        skip: offsetNum,
+        take: limitNum,
+        include: {
+            author: {
+                select: {
+                    id: true,
+                    firstName: true,
+                    lastName: true,
+                    isAdmin: true
+                }
+            },
+            _count: {
+                select: {
+                    likes: true,
+                    comments: true
+                }
+            }
         },
-        _count: {
-          select: { comments: true }
+        orderBy: {
+            createdAt: 'desc'
         }
-      }
     });
-  }
+}
 
   async findById(id) {
     return await prisma.post.findUnique({
@@ -61,7 +75,8 @@ class PostRepository {
               select: {
                 id: true,
                 firstName: true,
-                lastName: true
+                lastName: true,
+                isAdmin: true
               }
             }
           },

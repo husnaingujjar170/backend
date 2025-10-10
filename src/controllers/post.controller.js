@@ -23,20 +23,28 @@ class PostController {
 
   async getAllPosts(req, res, next) {
     try {
-      const { page = 1, limit = 10 } = req.query;
-      
-      const result = await postService.getAllPosts(page, limit);
-      
-      return response.success(
-        res,
-        result,
-        result.message,
-        HTTP_STATUS.OK
-      );
+        // Debug: Log the raw query
+        console.log('Raw query params:', req.query);
+        
+        // ✅ PROPERLY PARSE TO INTEGERS
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        
+        console.log('Parsed params (should be numbers):', { page, limit, pageType: typeof page, limitType: typeof limit });
+        
+        const result = await postService.getAllPosts(page, limit);
+        
+        return response.success(
+            res,
+            result,
+            result.message || MESSAGES.SUCCESS,
+            HTTP_STATUS.OK
+        );
     } catch (error) {
-      next(error);
+        console.error('Controller error:', error);
+        next(error);
     }
-  }
+}
 
   async getPostById(req, res, next) {
     try {
