@@ -25,7 +25,8 @@ class UserRepository {
                 lastName: true,
                 isActive: true,
                 createdAt: true,
-                updatedAt: true
+                updatedAt: true,
+                isAdmin: true
             }
         });
     }
