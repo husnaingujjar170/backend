@@ -32,7 +32,8 @@ class PostController {
         
         console.log('Parsed params (should be numbers):', { page, limit, pageType: typeof page, limitType: typeof limit });
         
-        const result = await postService.getAllPosts(page, limit);
+        const userId = req.user.id;
+        const result = await postService.getAllPosts(page, limit, userId);
         
         return response.success(
             res,

@@ -1,4 +1,4 @@
-const { postRepository, userRepository } = require('../repositories');
+const { postRepository, userRepository, likeRepository } = require('../repositories');
 const { MESSAGES } = require('../constants');
 
 class PostService {
@@ -19,9 +19,8 @@ class PostService {
     }
   }
 
-  async getAllPosts(page = 1, limit = 10) {
+  async getAllPosts(page = 1, limit = 10, userId) {
     try {
-        // ✅ ENSURE INTEGERS
         const pageNum = parseInt(page) || 1;
         const limitNum = parseInt(limit) || 10;
         
@@ -42,12 +41,22 @@ class PostService {
             include: ['author', 'likes', 'comments']
         });
         
+        const postsWithLikeStatus = await Promise.all(
+            posts.map(async (post) => {
+                const isLikedByUser = await likeRepository.isLikedByUser(userId, post.id);
+                return {
+                    ...post,
+                    isLikedByUser
+                };
+            })
+        );
+        
         return {
-            posts,
+            posts: postsWithLikeStatus,
             pagination: {
                 page: pageNum,
                 limit: limitNum,
-                total: posts.length
+                total: postsWithLikeStatus.length
             },
             message: MESSAGES.SUCCESS
         };
@@ -89,7 +98,6 @@ class PostService {
 
   async updatePost(postId, updateData, userId) {
     try {
-      // 🔐 SECURITY: Only owners can edit their posts (not admins)
       const isOwner = await postRepository.isOwner(postId, userId);
       if (!isOwner) {
         throw new Error('You can only update your own posts');
