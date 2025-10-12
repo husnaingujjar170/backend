@@ -20,7 +20,22 @@ class UserRepository {
             select: {
                 id: true,
                 email: true,
-                password: true, // Include password for authentication
+                password: true,
+                firstName: true,
+                lastName: true,
+                isActive: true,
+                createdAt: true,
+                updatedAt: true,
+                isAdmin: true
+            }
+        });
+    }
+    async findById(id) {
+        return await prisma.user.findUnique({
+            where: { id },
+            select: {
+                id: true,
+                email: true,
                 firstName: true,
                 lastName: true,
                 isActive: true,
