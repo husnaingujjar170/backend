@@ -30,46 +30,6 @@ class UserRepository {
             }
         });
     }
-    async findById(id) {
-        return await prisma.user.findUnique(
-            {
-                where: { id },
-                select:
-                {
-                    id: true,
-                    email: true,
-                    firstName: true,
-                    lastName: true,
-                    isActive: true,
-                    createdAt: true,
-                    updatedAt: true,
-                    isAdmin: true
-                }
-            }
-        );
-    }
-
-    async updateById(id, updateData) {
-        return await prisma.user.update({
-            where: { id },
-            data: updateData,
-            select: {
-                id: true,
-                email: true,
-                firstName: true,
-                lastName: true,
-                isActive: true,
-                createdAt: true,
-                updatedAt: true
-            }
-        });
-    }
-
-    async deleteById(id) {
-        return await prisma.user.delete({
-            where: { id }
-        });
-    }
     async existsByEmail(email) {
         const user = await prisma.user.findUnique({
             where: { email },

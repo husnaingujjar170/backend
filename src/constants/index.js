@@ -1,4 +1,3 @@
-// Application constants
 module.exports = {
   HTTP_STATUS: {
     OK: 200,
@@ -17,20 +16,12 @@ module.exports = {
     INVALID_CREDENTIALS: 'Invalid credentials',
     USER_EXISTS: 'User already exists',
     UNAUTHORIZED: 'Unauthorized access',
-    SERVER_ERROR: 'Internal server error',
-    FORBIDDEN: 'Access forbidden',
-    VALIDATION_ERROR: 'Validation failed',
-    ROUTE_NOT_FOUND: 'Route not found',
-    LOG_OUT: 'Logged out Successfully',
     
     POST_CREATED: 'Post created successfully',
     POST_UPDATED: 'Post updated successfully',
     POST_DELETED: 'Post deleted successfully',
-    POST_FOUND: 'Post founded',
-    POST_NOT_FOUND: 'Post not found',
     COMMENT_CREATED: 'Comment added successfully',
     COMMENT_UPDATED: 'Comment updated successfully',
-    COMMENT_DELETED: 'Comment deleted successfully',
-    COMMENT_NOT_FOUND: 'Comment not found'
+    COMMENT_DELETED: 'Comment deleted successfully'
   }
 };
