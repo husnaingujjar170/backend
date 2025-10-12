@@ -5,7 +5,6 @@ const { HTTP_STATUS, MESSAGES } = require('../constants');
 
 const authenticate = async (req, res, next) => {
   try {
-    // Try to get token from cookie first, then fallback to Authorization header
     let token = req.cookies?.token;
 
     if (!token) {
@@ -33,17 +32,7 @@ const authenticate = async (req, res, next) => {
     return response.error(res, MESSAGES.UNAUTHORIZED, HTTP_STATUS.UNAUTHORIZED);
   }
 };
-const authorize = (roles = []) => {
-  return (req, res, next) => {
-    if (!req.user) {
-      return response.error(res, MESSAGES.UNAUTHORIZED, HTTP_STATUS.UNAUTHORIZED);
-    }
-    console.log("dfvelngvkwjfgnvkjrtnkvt")
-    next();
-  };
-};
 
 module.exports = {
-  authenticate,
-  authorize
+  authenticate
 };

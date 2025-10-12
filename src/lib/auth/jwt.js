@@ -15,7 +15,5 @@ const verifyToken=(token)=>
 
 module.exports = {
     generateToken,
-    verifyToken,
-    JWT_SECRET,
-    JWT_EXPIRES_IN
+    verifyToken
 };

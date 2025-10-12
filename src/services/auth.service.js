@@ -1,5 +1,6 @@
 const { userRepository } = require('../repositories');
 const { auth } = require('../lib');
+const tokenService = require('./token.service');
 const { MESSAGES } = require('../constants');
 
 class AuthService {
@@ -16,12 +17,11 @@ class AuthService {
                 password: hashedPassword
             });
     
-            const token = auth.jwt.generateToken({
+            const token = tokenService.generateAccessToken({
                 userId: newUser.id,
                 email: newUser.email
             });
     
-            // Set HTTP-only cookie
             res.cookie('token', token, {
                 httpOnly: true,
                 secure: false,
@@ -40,7 +40,7 @@ class AuthService {
     }
     async login(email, password, res) {
         try {
-            // 1. Find user
+            console.log("problemhere");
             const user = await userRepository.findByEmail(email);
             if (!user) {
                 throw new Error(MESSAGES.INVALID_CREDENTIALS);
@@ -55,12 +55,11 @@ class AuthService {
                 throw new Error(MESSAGES.INVALID_CREDENTIALS);
             }
     
-            const token = auth.jwt.generateToken({
+            const token = tokenService.generateAccessToken({
                 userId: user.id,
                 email: user.email
             });
     
-            // Set HTTP-only cookie
             res.cookie('token', token, {
                 httpOnly: true,
                 secure: false,
