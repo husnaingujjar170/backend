@@ -35,7 +35,6 @@ class PostService {
         
         console.log('Calculated offset:', offset, 'type:', typeof offset);
         
-        // Get user to check if admin
         const user = await userRepository.findById(userId);
         const isAdmin = user?.isAdmin || false;
         
