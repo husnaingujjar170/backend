@@ -27,8 +27,7 @@ const upload = multer({
     fileFilter: fileFilter
 });
 
-const uploadSingle = upload.single('media');
-const uploadMultiple = upload.array('media', 5); // Max 5 files
+const uploadMultiple = upload.array('media', 5); 
 
 const handleUpload = (req, res, next) => {
     uploadMultiple(req, res, function (err) {
