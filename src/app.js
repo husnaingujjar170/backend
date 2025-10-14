@@ -1,6 +1,5 @@
 const express = require('express');
 const cors = require('cors');
-const helmet = require('helmet');
 const config = require('./config');
 const routes = require('./routes');
 const { logger } = require('./lib/logger');
@@ -10,7 +9,6 @@ const app = express();
 
 app.use(cookieParser());
 
-app.use(helmet());
 app.use(cors({
   origin: config.corsOrigin || 'http://localhost:5173',
   credentials: true
@@ -18,7 +16,6 @@ app.use(cors({
 
 app.use(logger);
 app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 app.use('/api', routes);
 
