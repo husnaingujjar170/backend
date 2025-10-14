@@ -6,9 +6,6 @@ class AuthController
 {
     async register(req,res,next)
     {
-      // 1. Get validated data from req.body (already validated by middleware)
-      // 2. Call authService.register()
-      // 3. Return success response with user + token
       console.log("I am here now boss\n");
         try {
         const userData=req.body;

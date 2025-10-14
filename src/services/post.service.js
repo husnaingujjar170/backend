@@ -81,14 +81,12 @@ class PostService {
         throw new Error('Post not found');
       }
 
-      // Check if user has access to this post
       const user = await userRepository.findById(userId);
       const isAdmin = user?.isAdmin || false;
       const isOwner = post.authorId === userId;
 
-      // If not admin and not the owner, deny access
       if (!isAdmin && !isOwner) {
-        throw new Error('Post not found'); // Hide existence for security
+        throw new Error('Post not found');
       }
 
       return {

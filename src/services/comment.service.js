@@ -9,17 +9,14 @@ class CommentService {
         throw new Error('Post not found');
       }
 
-      // If it's a reply, validate the parent comment exists and is not itself a reply
       if (commentData.parentCommentId) {
         const parentComment = await commentRepository.findById(commentData.parentCommentId);
         if (!parentComment) {
           throw new Error('Parent comment not found');
         }
-        // Ensure parent comment belongs to the same post
         if (parentComment.postId !== postId) {
           throw new Error('Parent comment does not belong to this post');
         }
-        // Prevent nested replies (replies to replies)
         if (parentComment.parentCommentId) {
           throw new Error('Cannot reply to a reply. Only one level of replies is allowed');
         }
@@ -44,7 +41,6 @@ class CommentService {
     try {
       const allComments = await commentRepository.findByPostId(postId);
       
-      // Filter to return only top-level comments (replies are already included in the 'replies' field)
       const topLevelComments = allComments.filter(comment => !comment.parentCommentId);
       
       return {
@@ -58,7 +54,6 @@ class CommentService {
 
   async updateComment(commentId, updateData, userId) {
     try {
-      // 🔐 SECURITY: Only owners can edit their comments (not admins)
       const isOwner = await commentRepository.isOwner(commentId, userId);
       
       if (!isOwner) {
@@ -78,7 +73,6 @@ class CommentService {
 
   async deleteComment(commentId, userId) {
     try {
-      // 🔐 SECURITY: Check ownership BEFORE deletion
       const isOwner = await commentRepository.isOwner(commentId, userId);
       const user = await userRepository.findById(userId);
       const isAdmin = user?.isAdmin || false;
