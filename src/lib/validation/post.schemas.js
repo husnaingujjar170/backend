@@ -19,7 +19,11 @@ const createPostSchema = Joi.object({
       'string.min': 'Content must be at least 10 characters long',
       'string.max': 'Content cannot exceed 5000 characters',
       'any.required': 'Content is required'
-    })
+    }),
+
+  mediaUrl: Joi.string().uri().optional(),
+  mediaType: Joi.string().valid('image', 'video').optional(),
+  mediaFilename: Joi.string().max(255).optional()
 });
 
 const updatePostSchema = Joi.object({

@@ -1,4 +1,5 @@
 const { postService } = require('../services');
+const mediaService = require('../services/media.service');
 const { response } = require('../lib');
 const { HTTP_STATUS } = require('../constants');
 
@@ -7,6 +8,18 @@ class PostController {
     try {
       const postData = req.body;
       const authorId = req.user.id;
+      const uploadedFile = req.file;
+
+      // Process media upload if file is provided
+      let mediaData = null;
+      if (uploadedFile) {
+        mediaData = await mediaService.processUpload(uploadedFile);
+        
+        // Add media information to post data
+        postData.mediaUrl = mediaData.url;
+        postData.mediaType = mediaData.type;
+        postData.mediaFilename = mediaData.filename;
+      }
       
       const result = await postService.createPost(postData, authorId);
       
@@ -17,6 +30,9 @@ class PostController {
         HTTP_STATUS.CREATED
       );
     } catch (error) {
+      if (req.file) {
+        await mediaService.cleanupTempFile(req.file.path);
+      }
       next(error);
     }
   }

@@ -1,5 +1,6 @@
 const express = require('express');
 const { validate, authenticate } = require('../middleware');
+const { handleUpload } = require('../middleware/upload.middleware');
 const { post: postSchemas } = require('../lib/validation');
 const postController = require('../controllers/post.controller');
 
@@ -12,6 +13,7 @@ router.get('/', postController.getAllPosts);
 router.get('/user/my-posts', postController.getUserPosts);
 
 router.post('/',
+  handleUpload,
   validate(postSchemas.createPostSchema),
   postController.createPost
 );
