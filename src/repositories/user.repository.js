@@ -52,5 +52,19 @@ class UserRepository {
         });
         return !!user;
     }
+
+    async findAll() {
+        return await prisma.user.findMany({
+            where: { isActive: true },
+            select: {
+                id: true,
+                email: true,
+                firstName: true,
+                lastName: true,
+                isAdmin: true
+            },
+            orderBy: { createdAt: 'desc' }
+        });
+    }
 }
 module.exports = new UserRepository();

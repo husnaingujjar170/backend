@@ -20,7 +20,7 @@ class PostRepository {
     });
   }
   async findAll(options = {}) {
-    const { offset = 0, limit = 10 } = options;
+    const { offset = 0, limit = 10, userId, isAdmin } = options;
     
     const offsetNum = parseInt(offset) || 0;
     const limitNum = parseInt(limit) || 10;
@@ -28,11 +28,29 @@ class PostRepository {
     console.log('Repository - Final params:', { 
         offsetNum, 
         limitNum, 
+        userId,
+        isAdmin,
         offsetType: typeof offsetNum, 
         limitType: typeof limitNum
     });
     
+    const whereClause = {};
+    
+    if (!isAdmin && userId) {
+        whereClause.OR = [
+            { authorId: userId },
+            { 
+                shares: {
+                    some: {
+                        userId: userId 
+                    }
+                }
+            }
+        ];
+    }
+    
     return await prisma.post.findMany({
+        where: whereClause,
         skip: offsetNum,
         take: limitNum,
         include: {
@@ -129,6 +147,52 @@ class PostRepository {
       select: { authorId: true }
     });
     return post?.authorId === userId;
+  }
+
+  async sharePost(postId, userId) {
+    return await prisma.postShare.create({
+      data: {
+        postId,
+        userId
+      }
+    });
+  }
+
+  async unsharePost(postId, userId) {
+    return await prisma.postShare.deleteMany({
+      where: {
+        postId,
+        userId
+      }
+    });
+  }
+
+  async getPostShares(postId) {
+    return await prisma.postShare.findMany({
+      where: { postId },
+      include: {
+        user: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true
+          }
+        }
+      }
+    });
+  }
+
+  async isPostSharedWithUser(postId, userId) {
+    const share = await prisma.postShare.findUnique({
+      where: {
+        postId_userId: {
+          postId,
+          userId
+        }
+      }
+    });
+    return !!share;
   }
 }
 

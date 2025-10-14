@@ -21,6 +21,7 @@ model User {
   posts    Post[]
   comments Comment[]
   likes    Like[]
+  shares   PostShare[] 
 
   @@map("users")
 }
@@ -34,12 +35,14 @@ model Post {
   mediaType     String?  
   mediaFilename String?  
   isActive      Boolean  @default(true)
+  isPublic      Boolean  @default(true)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
   author   User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
   comments Comment[]
   likes    Like[]
+  shares   PostShare[] 
 
   @@map("posts")
 }
@@ -61,11 +64,27 @@ model Comment {
   content   String
   postId    String
   authorId  String
+  parentCommentId String? 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   post   Post @relation(fields: [postId], references: [id], onDelete: Cascade)
   author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  parentComment   Comment? @relation("CommentReplies", fields: [parentCommentId], references: [id], onDelete: Cascade)
+  replies         Comment[] @relation("CommentReplies")
 
   @@map("comments")
+}
+
+model PostShare {
+  id        String   @id @default(cuid())
+  postId    String
+  userId    String
+  createdAt DateTime @default(now())
+
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, userId])  
+  @@map("post_shares")
 }

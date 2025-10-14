@@ -67,8 +67,9 @@ class PostController {
   async getPostById(req, res, next) {
     try {
       const { postId } = req.params;
+      const userId = req.user.id;
       
-      const result = await postService.getPostById(postId);
+      const result = await postService.getPostById(postId, userId);
       
       return response.success(
         res,
@@ -123,6 +124,61 @@ class PostController {
       const userId = req.user.id;
       
       const result = await postService.deletePost(postId, userId);
+      
+      return response.success(
+        res,
+        result,
+        result.message,
+        HTTP_STATUS.OK
+      );
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async sharePost(req, res, next) {
+    try {
+      const { postId } = req.params;
+      const { userId: shareWithUserId } = req.body;
+      const userId = req.user.id;
+      
+      const result = await postService.sharePost(postId, shareWithUserId, userId);
+      
+      return response.success(
+        res,
+        result,
+        result.message,
+        HTTP_STATUS.CREATED
+      );
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async unsharePost(req, res, next) {
+    try {
+      const { postId, userId: unshareFromUserId } = req.params;
+      const userId = req.user.id;
+      
+      const result = await postService.unsharePost(postId, unshareFromUserId, userId);
+      
+      return response.success(
+        res,
+        result,
+        result.message,
+        HTTP_STATUS.OK
+      );
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getPostShares(req, res, next) {
+    try {
+      const { postId } = req.params;
+      const userId = req.user.id;
+      
+      const result = await postService.getPostShares(postId, userId);
       
       return response.success(
         res,

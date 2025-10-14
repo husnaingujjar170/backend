@@ -27,4 +27,8 @@ router.put('/:postId',
 
 router.delete('/:postId', postController.deletePost);
 
+router.post('/:postId/share', postController.sharePost);
+router.delete('/:postId/share/:userId', postController.unsharePost);
+router.get('/:postId/shares', postController.getPostShares);
+
 module.exports = router;

@@ -35,9 +35,17 @@ class PostService {
         
         console.log('Calculated offset:', offset, 'type:', typeof offset);
         
+        // Get user to check if admin
+        const user = await userRepository.findById(userId);
+        const isAdmin = user?.isAdmin || false;
+        
+        console.log('User role check:', { userId, isAdmin });
+        
         const posts = await postRepository.findAll({
             offset: offset,
-            limit: limitNum,  
+            limit: limitNum,
+            userId: userId,
+            isAdmin: isAdmin,
             include: ['author', 'likes', 'comments']
         });
         
@@ -66,12 +74,22 @@ class PostService {
     }
 }
 
-  async getPostById(postId) {
+  async getPostById(postId, userId) {
     try {
       const post = await postRepository.findById(postId);
       
       if (!post) {
         throw new Error('Post not found');
+      }
+
+      // Check if user has access to this post
+      const user = await userRepository.findById(userId);
+      const isAdmin = user?.isAdmin || false;
+      const isOwner = post.authorId === userId;
+
+      // If not admin and not the owner, deny access
+      if (!isAdmin && !isOwner) {
+        throw new Error('Post not found'); // Hide existence for security
       }
 
       return {
@@ -130,6 +148,73 @@ class PostService {
       };
     } catch (error) {
       throw new Error(error.message || 'Failed to delete post');
+    }
+  }
+
+  async sharePost(postId, shareWithUserId, userId) {
+    try {
+      const isOwner = await postRepository.isOwner(postId, userId);
+      if (!isOwner) {
+        throw new Error('You can only share your own posts');
+      }
+
+      const targetUser = await userRepository.findById(shareWithUserId);
+      if (!targetUser) {
+        throw new Error('User not found');
+      }
+
+      if (shareWithUserId === userId) {
+        throw new Error('You cannot share a post with yourself');
+      }
+
+      const alreadyShared = await postRepository.isPostSharedWithUser(postId, shareWithUserId);
+      if (alreadyShared) {
+        throw new Error('Post is already shared with this user');
+      }
+
+      const share = await postRepository.sharePost(postId, shareWithUserId);
+      
+      return {
+        share,
+        message: 'Post shared successfully'
+      };
+    } catch (error) {
+      throw new Error(error.message || 'Failed to share post');
+    }
+  }
+
+  async unsharePost(postId, unshareFromUserId, userId) {
+    try {
+      const isOwner = await postRepository.isOwner(postId, userId);
+      if (!isOwner) {
+        throw new Error('You can only unshare your own posts');
+      }
+
+      const result = await postRepository.unsharePost(postId, unshareFromUserId);
+      
+      return {
+        message: 'Post unshared successfully'
+      };
+    } catch (error) {
+      throw new Error(error.message || 'Failed to unshare post');
+    }
+  }
+
+  async getPostShares(postId, userId) {
+    try {
+      const isOwner = await postRepository.isOwner(postId, userId);
+      if (!isOwner) {
+        throw new Error('You can only view shares for your own posts');
+      }
+
+      const shares = await postRepository.getPostShares(postId);
+      
+      return {
+        shares,
+        message: 'Shares retrieved successfully'
+      };
+    } catch (error) {
+      throw new Error(error.message || 'Failed to get post shares');
     }
   }
 }

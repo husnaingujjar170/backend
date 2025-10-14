@@ -25,8 +25,22 @@ class CommentRepository {
           select: {
             id: true,
             firstName: true,
-            lastName: true
+            lastName: true,
+            isAdmin: true
           }
+        },
+        replies: {
+          include: {
+            author: {
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                isAdmin: true
+              }
+            }
+          },
+          orderBy: { createdAt: 'asc' }
         }
       }
     });
