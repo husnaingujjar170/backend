@@ -5,7 +5,6 @@ const commentRoutes = require('../comment.routes');
 const likeRoutes = require('../like.routes'); 
 const router = express.Router();
 
-// All v1 routes
 router.use('/auth', authRoutes);
 router.use('/posts', postRoutes);
 router.use('/comments', commentRoutes);

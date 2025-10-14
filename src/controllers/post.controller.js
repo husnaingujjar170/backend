@@ -23,10 +23,8 @@ class PostController {
 
   async getAllPosts(req, res, next) {
     try {
-        // Debug: Log the raw query
         console.log('Raw query params:', req.query);
         
-        // ✅ PROPERLY PARSE TO INTEGERS
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
         

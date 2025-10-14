@@ -37,7 +37,7 @@ class PostService {
         
         const posts = await postRepository.findAll({
             offset: offset,
-            limit: limitNum,  // ✅ NOW INTEGER
+            limit: limitNum,  
             include: ['author', 'likes', 'comments']
         });
         
