@@ -6,13 +6,6 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-/**
- * Upload file to Cloudinary
- * @param {string} filePath - Path to the file to upload
- * @param {string} folder - Cloudinary folder name
- * @param {string} resourceType - 'image' or 'video'
- * @returns {Promise<Object>} Upload result
- */
 const uploadToCloudinary = async (filePath, folder = 'social-media-posts', resourceType = 'auto') => {
     try {
         const result = await cloudinary.uploader.upload(filePath, {
@@ -40,12 +33,7 @@ const uploadToCloudinary = async (filePath, folder = 'social-media-posts', resou
     }
 };
 
-/**
- * Delete file from Cloudinary
- * @param {string} publicId - Cloudinary public ID
- * @param {string} resourceType - 'image' or 'video'
- * @returns {Promise<Object>} Deletion result
- */
+
 const deleteFromCloudinary = async (publicId, resourceType = 'image') => {
     try {
         const result = await cloudinary.uploader.destroy(publicId, {

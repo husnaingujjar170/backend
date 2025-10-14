@@ -1,6 +1,5 @@
 const { uploadToCloudinary, deleteFromCloudinary } = require('../lib/cloudinary');
 const fs = require('fs').promises;
-const path = require('path');
 
 class MediaService {
     async processUpload(file) {
