@@ -8,17 +8,18 @@ class PostController {
     try {
       const postData = req.body;
       const authorId = req.user.id;
-      const uploadedFile = req.file;
+      const uploadedFiles = req.files;
 
-      // Process media upload if file is provided
-      let mediaData = null;
-      if (uploadedFile) {
-        mediaData = await mediaService.processUpload(uploadedFile);
+      let mediaData = [];
+      if (uploadedFiles && uploadedFiles.length > 0) {
+        for (const file of uploadedFiles) {
+          const processedMedia = await mediaService.processUpload(file);
+          mediaData.push(processedMedia);
+        }
         
-        // Add media information to post data
-        postData.mediaUrl = mediaData.url;
-        postData.mediaType = mediaData.type;
-        postData.mediaFilename = mediaData.filename;
+        postData.mediaUrl = JSON.stringify(mediaData.map(m => m.url));
+        postData.mediaType = JSON.stringify(mediaData.map(m => m.type));
+        postData.mediaFilename = JSON.stringify(mediaData.map(m => m.filename));
       }
       
       const result = await postService.createPost(postData, authorId);
@@ -30,8 +31,10 @@ class PostController {
         HTTP_STATUS.CREATED
       );
     } catch (error) {
-      if (req.file) {
-        await mediaService.cleanupTempFile(req.file.path);
+      if (req.files && req.files.length > 0) {
+        for (const file of req.files) {
+          await mediaService.cleanupTempFile(file.path);
+        }
       }
       next(error);
     }

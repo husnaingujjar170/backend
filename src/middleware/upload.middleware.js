@@ -28,9 +28,10 @@ const upload = multer({
 });
 
 const uploadSingle = upload.single('media');
+const uploadMultiple = upload.array('media', 5); // Max 5 files
 
 const handleUpload = (req, res, next) => {
-    uploadSingle(req, res, function (err) {
+    uploadMultiple(req, res, function (err) {
         if (err instanceof multer.MulterError) {
             if (err.code === 'LIMIT_FILE_SIZE') {
                 return res.status(400).json({
