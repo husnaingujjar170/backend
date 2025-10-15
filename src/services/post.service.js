@@ -214,6 +214,41 @@ class PostService {
       throw new Error(error.message || 'Failed to get post shares');
     }
   }
+
+  async getFollowingFeed(userId, page = 1, limit = 10) {
+    try {
+      const pageNum = parseInt(page) || 1;
+      const limitNum = parseInt(limit) || 10;
+      const offset = (pageNum - 1) * limitNum;
+
+      const posts = await postRepository.getFollowingFeed(userId, {
+        offset,
+        limit: limitNum
+      });
+
+      const postsWithLikeStatus = await Promise.all(
+        posts.map(async (post) => {
+          const isLikedByUser = await likeRepository.isLikedByUser(userId, post.id);
+          return {
+            ...post,
+            isLikedByUser
+          };
+        })
+      );
+
+      return {
+        posts: postsWithLikeStatus,
+        pagination: {
+          page: pageNum,
+          limit: limitNum,
+          total: postsWithLikeStatus.length
+        },
+        message: MESSAGES.SUCCESS
+      };
+    } catch (error) {
+      throw new Error(error.message || 'Failed to get following feed');
+    }
+  }
 }
 
 module.exports = new PostService();

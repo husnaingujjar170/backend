@@ -18,10 +18,12 @@ model User {
   updatedAt DateTime @updatedAt
   isAdmin   Boolean  @default(false)
 
-  posts    Post[]
-  comments Comment[]
-  likes    Like[]
-  shares   PostShare[] 
+  posts     Post[]
+  comments  Comment[]
+  likes     Like[]
+  shares    PostShare[]
+  followers Follow[]  @relation("UserFollowers")
+  following Follow[]  @relation("UserFollowing")
 
   @@map("users")
 }
@@ -87,4 +89,18 @@ model PostShare {
 
   @@unique([postId, userId])  
   @@map("post_shares")
+}
+model Follow {
+  id          String   @id @default(cuid())
+  followerId  String
+  followingId String
+  createdAt   DateTime @default(now())
+
+  follower    User @relation("UserFollowers", fields: [followerId], references: [id], onDelete: Cascade)
+  following   User @relation("UserFollowing", fields: [followingId], references: [id], onDelete: Cascade)
+
+  @@unique([followerId, followingId])
+  @@index([followerId])
+  @@index([followingId])
+  @@map("follows")
 }

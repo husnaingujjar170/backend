@@ -27,6 +27,12 @@ class LikeRepository {
     }
   }
 
+  async getliketoggle(postid)
+  {
+    return await prisma.findMany({
+      where: {postid: postid}
+    })
+  }
   async getLikeCount(postId) {
     return await prisma.like.count({
       where: { postId: postId }

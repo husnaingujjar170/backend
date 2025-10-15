@@ -10,6 +10,8 @@ router.use(authenticate);
 
 router.get('/', postController.getAllPosts);
 
+router.get('/feed/following', postController.getFollowingFeed);
+
 router.get('/user/my-posts', postController.getUserPosts);
 
 router.post('/',

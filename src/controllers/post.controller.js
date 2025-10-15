@@ -190,6 +190,25 @@ class PostController {
       next(error);
     }
   }
+
+  async getFollowingFeed(req, res, next) {
+    try {
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 10;
+      const userId = req.user.id;
+      
+      const result = await postService.getFollowingFeed(userId, page, limit);
+      
+      return response.success(
+        res,
+        result,
+        result.message,
+        HTTP_STATUS.OK
+      );
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 module.exports = new PostController();

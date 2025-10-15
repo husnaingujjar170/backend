@@ -194,6 +194,53 @@ class PostRepository {
     });
     return !!share;
   }
+
+  async getFollowingFeed(userId, options = {}) {
+    const { offset = 0, limit = 10 } = options;
+    
+    const offsetNum = parseInt(offset) || 0;
+    const limitNum = parseInt(limit) || 10;
+
+    const following = await prisma.follow.findMany({
+      where: { followerId: userId },
+      select: { followingId: true }
+    });
+
+    const followingIds = following.map(f => f.followingId);
+
+    if (followingIds.length === 0) {
+      return [];
+    }
+
+    return await prisma.post.findMany({
+      where: {
+        authorId: { in: followingIds },
+        isActive: true,
+        isPublic: true
+      },
+      skip: offsetNum,
+      take: limitNum,
+      include: {
+        author: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            isAdmin: true
+          }
+        },
+        _count: {
+          select: {
+            likes: true,
+            comments: true
+          }
+        }
+      },
+      orderBy: {
+        createdAt: 'desc'
+      }
+    });
+  }
 }
 
 module.exports = new PostRepository();
