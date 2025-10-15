@@ -1,4 +1,4 @@
-const { uploadToCloudinary, deleteFromCloudinary } = require('../lib/cloudinary');
+const { uploadToCloudinary} = require('../lib/cloudinary');
 const fs = require('fs').promises;
 
 class MediaService {
@@ -31,13 +31,6 @@ class MediaService {
         }
     }
 
-    async deleteMedia(publicId, mediaType = 'image') {
-        try {
-            return await deleteFromCloudinary(publicId, mediaType);
-        } catch (error) {
-            throw new Error(`Media deletion failed: ${error.message}`);
-        }
-    }
 
     async cleanupTempFile(filePath) {
         try {

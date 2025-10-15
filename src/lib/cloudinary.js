@@ -34,19 +34,7 @@ const uploadToCloudinary = async (filePath, folder = 'social-media-posts', resou
 };
 
 
-const deleteFromCloudinary = async (publicId, resourceType = 'image') => {
-    try {
-        const result = await cloudinary.uploader.destroy(publicId, {
-            resource_type: resourceType
-        });
-        return result;
-    } catch (error) {
-        throw new Error(`Cloudinary deletion failed: ${error.message}`);
-    }
-};
-
 module.exports = {
     cloudinary,
-    uploadToCloudinary,
-    deleteFromCloudinary
+    uploadToCloudinary
 };
